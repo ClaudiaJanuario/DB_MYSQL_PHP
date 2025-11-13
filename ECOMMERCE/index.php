@@ -92,7 +92,7 @@
 
                         <a href="modifica_contatto.php?id=<?=$row['id']?>">🖊️</a>
                         <a href="elimina_contatto.php?id=<?=$row['id']?>" onclick="return confirm('Eliminare questo contatto?');">🗑️</a>
-                        <a href="ordini.php">📦</a>
+                        <a href="ordini.php?id=<?=$row['id']?>">📦</a>
                     
                     </td>
                     

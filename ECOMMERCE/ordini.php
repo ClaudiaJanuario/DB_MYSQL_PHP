@@ -1,3 +1,16 @@
+<?php
+
+    require 'db.php';
+
+    $contatto_id = $_GET['id'];
+
+    $contatto = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM contatti WHERE id=$contatto_id"));
+
+    $ordini = mysqli_query($conn, "SELECT * FROM ordini WHERE contatto_id=$contatto_id");
+
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -6,49 +19,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css?v<?= time() ?>">
-    <title>Lista ordini</title>
+    <title>Ordini per Contatto</title>
 </head>
 <body>
 
     <div class="container">
 
-        <h1>Lista ordini</h1>
-        <a href="aggiungi_ordine.php" class="button">Aggiungi ordine</a>
+        <h2>Ordini di <?= $contatto['nome'] ?></h2>
+        <a href="aggiungi_ordine.php?id=<?= $contatto_id ?>" class="button">Nuovo Ordine</a>
 
         <table>
-            <thead>
+            
                 <tr>
                     <th>Prodotto</th>
                     <th>Quantità</th>
-                    <th>Data ordine</th>
-                    <th>Contatto</th>
-                    <th>Azioni</th>
+                    <th>Data</th>
+                    <th>Actions</th>
                 </tr>
-            </thead>
-            <tbody>
-                <?php while($rowOrdini = mysqli_fetch_assoc($resultOrdini)) : ?>
-                    <tr>
-                        <td>
-                            <?= htmlspecialchars($rowOrdini['prodotto']) ?>
-                        </td>
-                        <td>
-                            <?= htmlspecialchars($rowOrdini['quantita']) ?>
-                        </td>
-                        <td>
-                            <?= htmlspecialchars($rowOrdini['data_di_ordine']) ?>
-                        </td>
-                        <td>
-                            <?= htmlspecialchars($rowOrdini['contatto_id']) ?>
-                        </td>
-                        <td>
-                            <a href="modifica_ordine.php?id=<?= $rowOrdini['id'] ?>">🖊️</a>
-                            <a href="elimina_ordine.php?id=<?= $rowOrdini['id'] ?>">🗑️</a>
+            
+            
+                <?php while ($row = mysqli_fetch_assoc($ordini)) : ?>
+
+                <tr>
+                    <td><?= $row['prodotto'] ?></td>                    
+                        
+                    <td><?= $row['quantita'] ?></td>
+                        
+                    <td><?= $row['data_di_ordine'] ?></td>
+                        
+                                               
+                        <td class="actions">
+
+                            <a href="modifica_ordine.php?id=<?= $row['id'] ?>">🖊️</a>
+                            <a href="elimina_ordine.php?id=<?= $row['id'] ?>" onclick="return confirm('Sei sicuro di voler eliminare questo ordine?')>🗑️</a>
+                            
+
                         </td>
                     </tr>
                 <?php endwhile; ?>
-            </tbody>
+                
+           
         </table>
-
+        <a href="index.php" class="button">Torna alla lista</a>
     </div>
 
 </body>
