@@ -1,0 +1,116 @@
+body {
+
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #55E2E9;
+    margin: 0;
+    padding: 20px;
+
+}
+
+
+ .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #1E3A8A; /* blu scuro */
+        padding: 10px 20px;
+        color: white;
+        border-radius: 8px;
+    }
+
+    /* Logo */
+    .navbar .logo img {
+        height: 40px; /* altezza del logo */
+    }
+
+    /* Menu */
+    .navbar .menu a {
+        color: white;
+        text-decoration: none;
+        margin-left: 20px;
+        font-weight: bold;
+        transition: color 0.3s;
+    }
+
+    /* Effetto hover */
+    .navbar .menu a:hover {
+        color: #60A5FA; /* blu chiaro al passaggio */
+    }
+
+    /* Per mobile semplice */
+    @media (max-width: 600px) {
+        .navbar {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .navbar .menu {
+            margin-top: 10px;
+        }
+        .navbar .menu a {
+            margin-left: 0;
+            margin-right: 15px;
+        }
+    }
+
+
+
+
+
+.container{
+
+    max-width: 900px;
+    margin: auto;
+    background: whitesmoke;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow:  0 0 10px rgb(0, 0, 0.1);
+}
+
+
+h1 {
+
+    color: #333;
+    text-align: center;
+}
+
+a.button {
+
+    display: inline-block;
+    padding: 8px 16px;
+    margin: 10px 0;
+    background: #007bff;
+    border-radius: 4px;
+    text-decoration: none;
+    color: whitesmoke;
+
+}
+
+a.button:hover{
+
+    background: #19406a;
+}
+
+
+
+table {
+
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+
+
+}
+
+table th {
+
+    background: #14293f;
+    color: whitesmoke;
+}
+
+
+.actions a{
+
+    margin-right: 10px;
+    text-decoration: none;
+  
+} 
