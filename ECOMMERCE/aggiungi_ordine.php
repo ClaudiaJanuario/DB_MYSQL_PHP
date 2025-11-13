@@ -74,7 +74,7 @@
 
             Quantità: <input name="quantita" type="number"  min="1" required>
 
-            Data: <input name="data_di_ordine" type="date"  required>
+            Data: <input name="data" type="date"  required>
 
             
 
@@ -82,7 +82,7 @@
 
         </form>
 
-        <a href="ordini.php" class="button">Torna alla lista ordini</a>
+        
 
     </div>
 
