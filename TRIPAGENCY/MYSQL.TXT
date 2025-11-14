@@ -1,0 +1,66 @@
+AGENZIA
+
+CREIAMO DB:
+
+CREATE DATABASE IF NOT EXISTS tripagency;
+
+
+----PER USARLO :
+
+USE tripagency;
+
+
+
+----------------------------CREO TABELLE------------------------
+
+CREATE TABLE clienti (
+
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(30) NOT NULL,
+    cognome VARCHAR(30) NOT NULL,
+    telefono VARCHAR(30) NOT NULL,
+    nazione VARCHAR(30) NOT NULL,
+    codice_fiscale VARCHAR(16) NOT NULL,
+    documento VARCHAR(30) NOT NULL
+);
+
+
+
+CREATE TABLE destinazioni (
+
+    id INT AUTO_INCREMENT PRIMARY KEY
+    citta VARCHAR(30) NOT NULL,
+    paese VARCHAR(30) NOT NULL,
+    prezzo DECIMAL(10,2) NOT NULL,    //nello schema è int ma il prezzo non è sempre un intero
+    data_partenza DATE NOT NULL,
+    data_ritorno DATE NOT NULL
+
+);
+
+
+CREATE TABLE prenotazioni (
+    
+    id INT AUTO_INCREMENT PRIMARY KEY
+    id_cliente INT NOT NULL,
+    id_destinazione INT NOT NULL,
+    data_di_prenotazione DATE NOT NULL,
+    acconto DECIMAL(10,2) NOT NULL,
+    numero_persone INT NOT NULL,
+    assicurazione BOOLEAN NOT NULL,
+
+    CONSTRAINT fk_cliente FOREIGN KEY (id_cliente)  ->IMPEDISCE L INSERIMENTO DI UNA PRENOTAZIONE CON UNA DESTINAZIONE CHE NON ESISTE
+    REFERENCES clienti(id)                         ->referenza con l id della tabella cliente 
+    ON DELETE CASCADE,                              -> cancella automaticamente le prenotazione se la destinazione viene eliminata
+
+    CONSTRAINT fk_destinazione FOREIGN KEY (id_destinazione) 
+    REFERENCES destinazioni(id)
+    ON DELETE CASCADE
+
+);
+
+*** I clienti e le destinazioni sono entità indipendenti
+
+le prenotazioni dipendono da entrambe tramite chiavi esterne (fk) FOREIGN KEY
+
+I VINCOLI on delete cascade fanno si che, eliminandi un cliente o una destinazione,
+vengono cancellate 
