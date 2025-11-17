@@ -4,7 +4,7 @@
 
     <div class="text-center py-4">
 
-        <h1 class="display-5">Benvenutti nella nostraTrip-Agency</h1>
+        <h1 class="display-5">Benvenutti nella nostra Trip-Agency</h1>
         <p class="lead">Esplora le nostre destinazioni, gestisci i clienti e monitora le prenotazioni</p>
 
 

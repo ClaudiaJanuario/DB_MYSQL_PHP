@@ -41,6 +41,7 @@ h1, h2, h3 {
 }
 
 
+
 .table thead th {
 
     font-weight: 500;
@@ -50,5 +51,7 @@ h1, h2, h3 {
 
 
 footer {
-    margin-top: auto;
+    margin-top: 2px;
+    position: fixed;
+    padding: 2% 0;
 }

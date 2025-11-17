@@ -31,7 +31,7 @@ CREATE TABLE destinazioni (
     id INT AUTO_INCREMENT PRIMARY KEY
     citta VARCHAR(30) NOT NULL,
     paese VARCHAR(30) NOT NULL,
-    prezzo DECIMAL(10,2) NOT NULL,    //nello schema è int ma il prezzo non è sempre un intero
+    prezzo DECIMAL(10,2) NOT NULL,                  //nello schema è int ma il prezzo non è sempre un intero
     data_partenza DATE NOT NULL,
     data_ritorno DATE NOT NULL
 
@@ -49,7 +49,7 @@ CREATE TABLE prenotazioni (
     assicurazione BOOLEAN NOT NULL,
 
     CONSTRAINT fk_cliente FOREIGN KEY (id_cliente)  ->IMPEDISCE L INSERIMENTO DI UNA PRENOTAZIONE CON UNA DESTINAZIONE CHE NON ESISTE
-    REFERENCES clienti(id)                         ->referenza con l id della tabella cliente 
+    REFERENCES clienti(id)                          ->referenza con l id della tabella cliente 
     ON DELETE CASCADE,                              -> cancella automaticamente le prenotazione se la destinazione viene eliminata
 
     CONSTRAINT fk_destinazione FOREIGN KEY (id_destinazione) 
