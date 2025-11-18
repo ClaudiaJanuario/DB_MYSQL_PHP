@@ -3,7 +3,7 @@
 
 <footer> 
 
-    <div class="text-white text-center mt-5 p-5" style="background-color: #0081a7">
+    <div class="text-white text-center mt-5 p-5" style="background-color: #2A4591">
 
     <small>© Trip-Agency <?php echo date("Y"); ?></small>
 

@@ -6,9 +6,10 @@ html, body {
 }
 
 body {
-    background-color: rgb(193, 193, 242);
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-color: #DFAD0F;
+    font-family: "Playfair Display", serif;
 }
+
 
 
 
@@ -19,6 +20,7 @@ main {
 }
 
 h1, h2, h3 {
+    
     font-weight: 600;
     color: #333;
 }
@@ -26,6 +28,7 @@ h1, h2, h3 {
 
 .navbar {
     box-shadow: 0, 2px, 4px, rgb(0, 0, 0.1);
+    color: #860608;
 }
 
 .navbar .nav-link:hover {
@@ -52,6 +55,6 @@ h1, h2, h3 {
 
 footer {
     margin-top: 2px;
-    position: fixed;
+    
     padding: 2% 0;
 }
