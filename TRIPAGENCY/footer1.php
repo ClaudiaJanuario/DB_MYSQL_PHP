@@ -1,7 +1,7 @@
 </main>   <!---chiusura del main--->
 
 
-<footer class="footer_personal"> 
+<footer class="footer1_personal"> 
 
     <div class="text-white text-center mt-5 p-5" style="background-color: #2A4591">
 

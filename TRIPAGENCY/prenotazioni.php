@@ -4,7 +4,7 @@
 
 
     //Logica per impaginazione
-    $perPagina = 10;  // n elementi mostrati per pagina
+    $perPagina = 5;  // n elementi mostrati per pagina
     $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
     $offset = ($page - 1) * $perPagina;
 
@@ -28,7 +28,25 @@
         //eseguo lo statement
         $stmt->execute();
 
+        //Redirect post inserimento, che grazie alla funzione setTimeout di Js, ritarderà il redirect 
+        //verso le prenotazioni
         echo "<div class='alert alert-success'>Prenotazione Aggiunta!</div>";
+        echo "
+        
+                <script>
+
+                        setTimeout(function () {
+
+                            window.location.href = 'prenotazioni.php'
+
+                        }, 2500);
+
+                </script>
+
+            ";
+
+
+        exit;
 
 
     }
@@ -49,27 +67,39 @@
 
     }
 
-
-
-
-
     //MODIFICA DEL DATO, SALVATAGGIO 
     if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['salva_modifica'])){
 
+        $assicurazione = intval($_POST['assicurazione']);
         //PREPARE
         $stmt = $conn->prepare("UPDATE prenotazioni SET id_cliente=?, id_destinazione=?, acconto=?, assicurazione=? WHERE id=?");
         //BINDING
-        $stmt->bind_param("iiiii" ,$_POST['id_cliente'],$_POST['id_destinazione'],$_POST['acconto'], $assicurazione, $_POST['id']);
+        $stmt->bind_param("iiiii" ,$_POST['id_cliente'], $_POST['id_destinazione'], $_POST['acconto'], $assicurazione, $_POST['id']);
         //ESECUZIONE QUERY
         $stmt->execute();
-        //messaggio
-        echo "<div class='alert alert-info'>Prenotazione Modificata correttamente</div>";
+        
+        //Redirect post inserimento, che grazie alla funzione setTimeout di Js, ritarderà il redirect 
+        //verso le prenotazioni
+        echo "<div class='alert alert-info'>Prenotazione Modificata!</div>";
+        echo "
+        
+                <script>
+
+                        setTimeout(function () {
+
+                            window.location.href = 'prenotazioni.php'
+
+                        }, 2500);
+
+                </script>
+
+            ";
+
+        exit;
+
     }
 
-
-
-
-
+    
     //CANCELLAZIONE CLIENTE
     if(isset($_GET['elimina'])){
 
@@ -88,7 +118,6 @@
     //$result = $conn->query("SELECT * FROM prenotazioni ORDER BY id ASC LIMIT $perPagina OFFSET $offset");
 
 
-
     //QUERY ASSOCIAZIONE JOIN TRA LE DUE TABELLE 
 
     $stmt = $conn->prepare("SELECT p.id, c.nome, c.cognome, d.citta, d.paese, p.acconto, p.assicurazione, p.data_di_prenotazione
@@ -100,13 +129,8 @@
     $stmt->bind_param("ii", $perPagina, $offset);
     $stmt->execute();
     $result = $stmt->get_result();
-
-
-    
+   
  ?>
-
-
-
 
 
 <h2>Prenotazioni</h2>
@@ -117,6 +141,12 @@
 
 
             <form action="" method="POST">
+
+                <?php if ($prenotazione_modifica): ?>
+
+                    <input type="hidden" name="id" value="<?= $prenotazione_modifica['id'] ?>">
+
+                <?php endif; ?>
 
                 <div class="row g-3">
                     
@@ -161,8 +191,7 @@
 
 
                     </div>
-                    
-                   
+                                       
                     
                     <div class="col-md-6">
                         <label style="font-weight: 600;" for="">Acconto: </label>
@@ -173,21 +202,21 @@
                     </div>
 
                    
-
-                    <div class="col-md-6">
+                    <div class="col-md-2">
                         <label style="font-weight: 600;" for="">Assicurazione: </label>
                         
                         <!--Logica ternaria dato assicurazione booleano/ tinyInt su Mysql trattato come int in php-->
-                        <input type="radio" name="assicurazione" value="1" 
-                            <?= (isset($prenotazione_modifica) && $prenotazione_modifica['assicurazione'] == 1) ? 'checked' : '' ?>>
-                        <label for="assicurazione">Sì</label>
-                        <input type="radio" name="assicurazione" value="0" 
-                            <?= (isset($prenotazione_modifica) && $prenotazione_modifica['assicurazione'] == 0) ? 'checked' : '' ?>>
-                        <label for="assicurazione">No</label>
+                        
+                        <select name="assicurazione" id="" class="form-select" required>
+
+                            <option value="1"<?= ($prenotazione_modifica && $prenotazione_modifica['assicurazione']) == 1 ? 'selected' : '' ?>>SI</option>
+                            <option value="0"<?= ($prenotazione_modifica && $prenotazione_modifica['assicurazione']) == 0 ? 'selected' : '' ?>>NO</option>
+
+                        </select>
+                                              
                     </div>
                    
-                    
-                    
+                                        
                     <div class="col-md-12">
                         
                         <button 
@@ -198,7 +227,6 @@
                         </button>
                     
                     </div>
-
                 </div>
             </form>
         </div>
@@ -225,6 +253,7 @@
             </tr>
 
         </thead>
+        
         <!--Corpo tabella-->
         <tbody>
 
@@ -236,7 +265,7 @@
                     <td><?= $row['citta'] ?></td>
                     <td><?= date("d/m/Y H:i", strtotime($row['data_di_prenotazione'])) ?></td>
                     <td><?= $row['acconto'] ?></td>
-                    <td><?= $row['assicurazione']?'Sì' : 'No'?></td>
+                    <td><?= $row['assicurazione'] == 1 ? 'Presente' : 'Non presente' ?></td>
                     
                     <td>
                         <a class="btn btn-sm btn-warning" href="?modifica=<?= $row['id']  ?>">🖊️</a>
@@ -256,7 +285,7 @@
     <!--Paginazione-->
     <nav>
 
-        <ul class="pagination">
+        <ul class="pagination pagination_personal">
 
             <?php for($i = 1; $i <= $totalPages; $i++ ) : ?>
 
@@ -265,8 +294,6 @@
                 </li>   
 
             <?php endfor; ?>
-
-
 
         </ul>
     </nav>

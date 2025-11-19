@@ -22,7 +22,8 @@ main {
 
 h1, h2, h3 {
     
-    font-weight: 600;
+    font-weight: 800;
+  
     color: #333;
 }
 
@@ -53,11 +54,40 @@ h1, h2, h3 {
 }
 
 
+.pagination_personal .page-link{
 
-footer {
-    margin-top: 2px;
+    color: #fff;
+    background-color: #2A4591;
+    border-color: #DFAD0F;
+}
+
+.pagination_personal .page-link:hover{
     
-    padding: 2% 0;
+    color: #fff;
+    background-color: #567ade;
+    border-color: #DFAD0F;
+    
+}
+
+.pagination_personal .page-link.active .page-link {
+    
+    color: #fff;
+    background-color: #567ade;
+    border-color: #DFAD0F;
+    
+}
+
+.footer_personal {
+    margin-top: 50px;
+    height: 136px;
+    width: 100%;
+}
+
+
+.footer1_personal {
+    margin-top: 50px;
+    height: 117px;
+    width: 100%;
 }
 
 

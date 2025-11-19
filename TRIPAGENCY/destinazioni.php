@@ -4,7 +4,7 @@
 
 
     //Logica per impaginazione
-    $perPagina = 10;  // n elementi mostrati per pagina
+    $perPagina = 5;  // n elementi mostrati per pagina
     $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
     $offset = ($page - 1) * $perPagina;
 
@@ -244,7 +244,7 @@
     <!--Paginazione-->
     <nav>
 
-        <ul class="pagination">
+        <ul class="pagination pagination_personal">
 
             <?php for($i = 1; $i <= $totalPages; $i++ ) : ?>
 

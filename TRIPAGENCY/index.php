@@ -12,7 +12,7 @@
 
     <div class="d-flex justify-content-center align-items-center mb-5 flex-wrap gap-4">
 
-        <img src="rio.webp" class="img-fluid" alt="valigia_brasile" style="max-height: 300px;">
+        <img src="images/rio.webp" class="img-fluid" alt="valigia_brasile" style="max-height: 500px;">
         
 
 
@@ -25,7 +25,7 @@
             <div class="card shadow-sm">
                 <div class="card-body text-center">
                    <h5 class="card-title">Clienti</h5>
-                   <img src="viaggiatore.webp" class="img-fluid" alt="valigia_brasile" style="max-height: 80px;">
+                   <img src="images/viaggiatore.webp" class="img-fluid" alt="valigia_brasile" style="max-height: 200px;">
                    <p class="card-text">Gestisci le informazioni dei tuoi clienti</p>
                    <a href="clienti.php" class="btn btn-primary">Vai ai Clienti</a>
                 </div>
@@ -37,7 +37,7 @@
             <div class="card shadow-sm">
                 <div class="card-body text-center">
                    <h5 class="card-title">Destinazioni</h5>
-                   <img src="destino.jpg" class="img-fluid" alt="valigia_brasile" style="max-height: 80px;">
+                   <img src="images/destino.jpg" class="img-fluid" alt="valigia_brasile" style="max-height: 200px;">
                    <p class="card-text">Consulta o aggiungi nuove mete turistiche</p>
                    <a href="destinazioni.php" class="btn btn-success">Vai alle Destinazioni</a>
                 </div>
@@ -49,7 +49,7 @@
             <div class="card shadow-sm">
                 <div class="card-body text-center">
                    <h5 class="card-title">Prenotazioni</h5>
-                   <img src="pc-zaino.png" class="img-fluid" alt="valigia_brasile" style="max-height: 80px;">
+                   <img src="images/pc-zaino.png" class="img-fluid" alt="valigia_brasile" style="max-height: 200px;">
                    <p class="card-text">Visualizza e registra le prenotazioni</p>
                    <a href="prenotazioni.php" class="btn btn-warning">Vai alle prenotazioni</a>
                 </div>

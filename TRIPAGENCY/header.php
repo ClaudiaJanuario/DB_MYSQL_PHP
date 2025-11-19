@@ -22,8 +22,8 @@
 
         <!--Logo o Brand-->
         <a class="navbar-brand d-flex align-items-center" href="index.php">
-            <img src="logo4.png" alt="" style="height: 30px; width: auto; border-radius: 50px">
-            Brasil-Agency
+            <img src="images/logo4.png" alt="" style="height: 70px; width: auto; border-radius: 50px">
+            <h2 class="nav_brand">Brasil-Agency</h2>
         </a>
 
         <!--Bottone Hamburgher-->
