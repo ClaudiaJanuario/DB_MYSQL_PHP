@@ -20,10 +20,10 @@
     if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['aggiungi'])){
 
         //Preparo lo stato stmt -> statement 
-        $stmt = $conn->prepare("INSERT INTO prenotazioni (id_cliente, id_destinazione, data_di_prenotazione, acconto, numero_persone, assicurazione) 
-                                VALUES  (?, ?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO prenotazioni (id_cliente, id_destinazione, acconto, assicurazione) 
+                                VALUES  (?, ?, ?, ?)");
         //Binding dei parametri e tipizzo
-        $stmt->bind_param("iisiii", $_POST['id_cliente'], $_POST['id_destinazione'], $_POST['data_di_prenotazione'],$_POST['acconto'], $_POST['numero_persone'], $_POST['assicurazione']);
+        $stmt->bind_param("iiii", $_POST['id_cliente'], $_POST['id_destinazione'],$_POST['acconto'],$_POST['assicurazione']);
         
         //eseguo lo statement
         $stmt->execute();
@@ -57,9 +57,9 @@
     if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['salva_modifica'])){
 
         //PREPARE
-        $stmt = $conn->prepare("UPDATE prenotazioni SET id_cliente=?, id_destinazione=?, data_di_prenotazione=?, acconto=?, numero_persone=?, assicurazione=? WHERE id=?");
+        $stmt = $conn->prepare("UPDATE prenotazioni SET id_cliente=?, id_destinazione=?, acconto=?, assicurazione=? WHERE id=?");
         //BINDING
-        $stmt->bind_param("iisiiii" ,$_POST['id_cliente'],$_POST['id_destinazione'],$_POST['data_di_prenotazione'],$_POST['acconto'],$_POST['numero_persone'],$_POST['assicurazione'],$_POST['id']);
+        $stmt->bind_param("iiiii" ,$_POST['id_cliente'],$_POST['id_destinazione'],$_POST['acconto'], $assicurazione, $_POST['id']);
         //ESECUZIONE QUERY
         $stmt->execute();
         //messaggio
@@ -91,7 +91,7 @@
 
     //QUERY ASSOCIAZIONE JOIN TRA LE DUE TABELLE 
 
-    $stmt = $conn->prepare("SELECT p.id, c.nome, c.cognome, d.citta, d.paese, p.data_di_prenotazione, p.numero_persone, p.acconto, p.assicurazione
+    $stmt = $conn->prepare("SELECT p.id, c.nome, c.cognome, d.citta, d.paese, p.acconto, p.assicurazione, p.data_di_prenotazione
                             FROM prenotazioni p
                             JOIN clienti c ON p.id_cliente = c.id
                             JOIN destinazioni d ON p.id_destinazione = d.id
@@ -120,7 +120,7 @@
 
                 <div class="row g-3">
                     
-                    <div class="col-md-3">
+                    <div class="col-md-6">
 
                         <label style="font-weight: 600;" for="">Cliente: </label>
                         <select name="id_cliente" class="form-select" required>
@@ -128,14 +128,19 @@
                             <option value="">Seleziona il cliente</option>
                             <?php while ($c = $clienti->fetch_assoc()) : ?>
 
-                                <option value="<?= $c['id'] ?>"><?= $c['nome'] . ' ' . $c['cognome'] ?></option>
+                                 <option value="<?= $c['id'] ?>"
+
+                                    <?= ($prenotazione_modifica && $prenotazione_modifica['id_cliente'] == $c['id']) ? 'selected' : '' ?>>
+                                    <?= $c['nome'] . ' ' . $c['cognome'] ?>
+                                    
+                                </option>
 
                             <?php endwhile; ?>
                         </select>
                         
                     </div>
                     
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <label style="font-weight: 600;" for="">Destinazione: </label>
                         <div class="wrapper py-0">
                             <select name="id_destinazione" class="form-control" onfocus='this.size=3;' onblur='this.size=1;' onchange='this.size=1; this.blur();' required>
@@ -143,9 +148,12 @@
                                 <option value="">Seleziona Destinazione</option>
                                 <?php while ($d = $destinazioni->fetch_assoc()) : ?>
 
-                                    <option value="<?= $d['id'] ?>"><?= $d['citta'] . ' ' . $d['paese'] ?></option>
+                                     <option value="<?= $d['id'] ?>"
 
-
+                                        <?= ($prenotazione_modifica && $prenotazione_modifica['id_destinazione'] == $d['id']) ? 'selected' : '' ?>>
+                                        <?= $d['citta'] . ' ' . $d['paese'] ?>
+                                    
+                                    </option>
 
                                 <?php endwhile; ?>
                             </select>
@@ -156,48 +164,28 @@
                     
                    
                     
-                    <div class="col-md-3">
-                        <label style="font-weight: 600;" for="">Data Prenotazione: </label>
-                        <input type="date" name="data_di_prenotazione" class="form-control" placeholder="" 
-                        
-                        value="<?= $prenotazione_modifica['data_di_prenotazione'] ?? ''?>"
-                        
-                        required>
-                    </div>
-
-                     <div class="col-md-3">
+                    <div class="col-md-6">
                         <label style="font-weight: 600;" for="">Acconto: </label>
                         <input type="number" name="acconto" class="form-control" placeholder="" 
                         
-                        value="<?= $prenotazione_modifica['acconto'] ?? ''?>"
+                        value="<?= $prenotazione_modifica['acconto'] ?? ''?>">                       
                         
-                        required>
                     </div>
 
                    
-                    
-                    <div class="col-md-2">
-                        <label style="font-weight: 600;" for="">Numero persone : </label>
-                        <input type="number" min ="1" name="numero_persone" class="form-control" placeholder="" 
-                        
-                        value="<?= $prenotazione_modifica['numero_persone'] ?? ''?>"
-                        
-                        required>
-                    </div>
-                    
 
-
-                    <div class="col-md-2">
+                    <div class="col-md-6">
                         <label style="font-weight: 600;" for="">Assicurazione: </label>
                         
                         <!--Logica ternaria dato assicurazione booleano/ tinyInt su Mysql trattato come int in php-->
-                        <input type="checkbox"  name="assicurazione" 
-                        
-                        
-                        value="1" <?= ($prenotazione_modifica['assicurazione'] ?? 0) ? 'checked' : ''?>  required>
-                        
-                      
+                        <input type="radio" name="assicurazione" value="1" 
+                            <?= (isset($prenotazione_modifica) && $prenotazione_modifica['assicurazione'] == 1) ? 'checked' : '' ?>>
+                        <label for="assicurazione">Sì</label>
+                        <input type="radio" name="assicurazione" value="0" 
+                            <?= (isset($prenotazione_modifica) && $prenotazione_modifica['assicurazione'] == 0) ? 'checked' : '' ?>>
+                        <label for="assicurazione">No</label>
                     </div>
+                   
                     
                     
                     <div class="col-md-12">
@@ -231,7 +219,6 @@
                 <th>Destinazione</th>
                 <th>Data</th>
                 <th>Acconto</th>
-                <th>N.Persone</th>
                 <th>Assicurazione</th>
                 <th>Azioni</th>
 
@@ -247,16 +234,13 @@
                     <td><?= $row['id'] ?></td>
                     <td><?= $row['nome'] . ' ' . $row['cognome'] ?></td>
                     <td><?= $row['citta'] ?></td>
-                    <td><?= $row['data_di_prenotazione'] ?></td>
+                    <td><?= date("d/m/Y H:i", strtotime($row['data_di_prenotazione'])) ?></td>
                     <td><?= $row['acconto'] ?></td>
-                    <td><?= $row['numero_persone'] ?></td>
-                    <td><?= $row['assicurazione'] ?></td>
+                    <td><?= $row['assicurazione']?'Sì' : 'No'?></td>
+                    
                     <td>
-
-                        <a class="btn btn-sm btn-warning" href="?modifica=<?= $row['id']  ?>">Modifica</a>
-                        <a class="btn btn-sm btn-danger" href="?elimina=<?= $row['id']  ?>" onclick="return confirm ('Sicuro?')">Elimina</a>
-
-
+                        <a class="btn btn-sm btn-warning" href="?modifica=<?= $row['id']  ?>">🖊️</a>
+                        <a class="btn btn-sm btn-danger" href="?elimina=<?= $row['id']  ?>" onclick="return confirm ('Sicuro?')">🗑️</a>
                     </td>
                 </tr>
 
@@ -287,4 +271,10 @@
         </ul>
     </nav>
 
+
+
+    
 <?php include 'footer.php'; ?>
+
+
+

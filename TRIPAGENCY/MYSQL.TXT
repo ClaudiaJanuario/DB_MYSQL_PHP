@@ -21,7 +21,8 @@ CREATE TABLE clienti (
     telefono VARCHAR(30) NOT NULL,
     nazione VARCHAR(30) NOT NULL,
     codice_fiscale VARCHAR(16) NOT NULL,
-    documento VARCHAR(30) NOT NULL
+    documento VARCHAR(255),
+    email VARCHAR(30) NOT NULL
 );
 
 
@@ -45,9 +46,9 @@ CREATE TABLE prenotazioni (
     id_cliente INT NOT NULL,
     id_destinazione INT NOT NULL,
     data_di_prenotazione DATE NOT NULL,
-    acconto DECIMAL(10,2) NOT NULL,
+    acconto DECIMAL(10,2),
     numero_persone INT NOT NULL,
-    assicurazione BOOLEAN NOT NULL,
+    assicurazione BOOLEAN,
 
     CONSTRAINT fk_cliente FOREIGN KEY (id_cliente)  ->IMPEDISCE L INSERIMENTO DI UNA PRENOTAZIONE CON UNA DESTINAZIONE CHE NON ESISTE
     REFERENCES clienti(id)                          ->referenza con l id della tabella cliente 
@@ -65,3 +66,43 @@ le prenotazioni dipendono da entrambe tramite chiavi esterne (fk) FOREIGN KEY
 
 I VINCOLI on delete cascade fanno si che, eliminandi un cliente o una destinazione,
 vengono cancellate 
+
+
+
+
+*nel bind_param
+
+
+
+
+
+
+//evoluzione progetto
+
+è meglio cancellare il campo numero_persone poichè ogni persona registrata 
+prenota per sè stessa, e l'assicurazione è personale.
+
+
+
+
+
+
+
+
+ALTER TABLE prenotazioni
+MODIFY data_prenotazione DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+
+
+
+
+
+
+<?php  
+    $cliente_id = $_GET['id']; 
+
+    $cliente = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM clienti WHERE id=$cliente_id"));
+
+    $prenotazioni = mysqli_query($conn, "SELECT * FROM prenotazioni WHERE cliente_id=$cliente_id");
+
+?>

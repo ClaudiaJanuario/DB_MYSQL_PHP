@@ -220,13 +220,13 @@
                     <td><?= $row['citta'] ?></td>
                     <td><?= $row['paese'] ?></td>
                     <td><?= $row['prezzo'] ?></td>
-                    <td><?= $row['data_partenza'] ?></td>
-                    <td><?= $row['data_ritorno'] ?></td>
+                    <td><?= date("d/m/Y", strtotime($row['data_partenza'])) ?></td>
+                    <td><?= date("d/m/Y", strtotime($row['data_ritorno'])) ?></td>
                     <td><?= $row['posti_disponibili'] ?></td>
                     <td>
 
-                        <a class="btn btn-sm btn-warning" href="?modifica=<?= $row['id']  ?>">Modifica</a>
-                        <a class="btn btn-sm btn-danger" href="?elimina=<?= $row['id']  ?>" onclick="return confirm ('Sicuro?')">Elimina</a>
+                        <a class="btn btn-sm btn-warning" href="?modifica=<?= $row['id']  ?>">🖊️</a>
+                        <a class="btn btn-sm btn-danger" href="?elimina=<?= $row['id']  ?>" onclick="return confirm ('Sicuro?')">🗑️</a>
 
 
                     </td>

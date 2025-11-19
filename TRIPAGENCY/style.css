@@ -8,6 +8,7 @@ html, body {
 body {
     background-color: #DFAD0F;
     font-family: "Playfair Display", serif;
+    font-size: 24px;
 }
 
 
@@ -62,8 +63,7 @@ footer {
 
 /*wrapper per selection destinazione*/
 .wrapper{
-    width: 200px;
-    padding: 20px;
-    height: 150px;
+    width: auto;
+    height: auto;
     
 }
