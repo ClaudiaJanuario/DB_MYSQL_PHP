@@ -9,9 +9,10 @@
     $offset = ($page - 1) * $perPagina;
 
 
-    //QUERY PER ESTRARRE Select dropdpwn clienti e destinazioni
+    //QUERY PER ESTRARRE DATI PER SELECT DROPDOWN Clienti e Destinazioni
     $clienti = $conn->query("SELECT id, nome, cognome FROM clienti");
-    $destinazioni= $conn->query("SELECT id, citta, paese FROM destinazioni");
+    $destinazioni = $conn->query("SELECT id, citta, paese FROM destinazioni");
+
 
 
     //LOGICA DI AGGIUNTA
@@ -78,6 +79,29 @@
         echo "<div class='alert alert-info'>Prenotazione Cancellata correttamente</div>";
     }
 
+
+    //vado a conteggiare il totale dei clienti con query
+    $total = $conn->query("SELECT COUNT(*) as t FROM prenotazioni")->fetch_assoc()['t'];
+    $totalPages = ceil($total / $perPagina); // il numero di pagine della navigazione
+
+    //QUERY PER ordinare i dati in modo DECRESCENTE IMPAGINATI PER valore di "$perPagina" 
+    //$result = $conn->query("SELECT * FROM prenotazioni ORDER BY id ASC LIMIT $perPagina OFFSET $offset");
+
+
+
+    //QUERY ASSOCIAZIONE JOIN TRA LE DUE TABELLE 
+
+    $stmt = $conn->prepare("SELECT p.id, c.nome, c.cognome, d.citta, d.paese, p.data_di_prenotazione, p.numero_persone, p.acconto, p.assicurazione
+                            FROM prenotazioni p
+                            JOIN clienti c ON p.id_cliente = c.id
+                            JOIN destinazioni d ON p.id_destinazione = d.id
+                            ORDER BY p.id DESC LIMIT ? OFFSET ?
+                            ");
+    $stmt->bind_param("ii", $perPagina, $offset);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+
     
  ?>
 
@@ -102,30 +126,30 @@
                         <select name="id_cliente" class="form-select" required>
 
                             <option value="">Seleziona il cliente</option>
-                            <?php while ($i = $clienti->fetch_assoc()) : ?>
+                            <?php while ($c = $clienti->fetch_assoc()) : ?>
 
-                                <option value="<?= $i['id'] ?>"<?= $i['nome'] ?><?= $i['cognome'] ?>></option>
+                                <option value="<?= $c['id'] ?>"><?= $c['nome'] . ' ' . $c['cognome'] ?></option>
 
-                            <?php endwhile ?>
-
-
+                            <?php endwhile; ?>
                         </select>
                         
                     </div>
                     
                     <div class="col-md-3">
                         <label style="font-weight: 600;" for="">Destinazione: </label>
-                        <select name="id_destinazione" class="form-select" required>
+                        <div class="wrapper py-0">
+                            <select name="id_destinazione" class="form-control" onfocus='this.size=3;' onblur='this.size=1;' onchange='this.size=1; this.blur();' required>
 
-                            <option value="">Seleziona Destinazione</option>
-                            <?php while ($i = $destinazioni->fetch_assoc()) : ?>
+                                <option value="">Seleziona Destinazione</option>
+                                <?php while ($d = $destinazioni->fetch_assoc()) : ?>
 
-                                <option value="<?= $i['id'] ?><?= $i['citta'] ?><?= $i['paese'] ?>"></option>
+                                    <option value="<?= $d['id'] ?>"><?= $d['citta'] . ' ' . $d['paese'] ?></option>
 
-                            <?php endwhile ?>
 
-                        </select>
 
+                                <?php endwhile; ?>
+                            </select>
+                        </div>    
 
 
                     </div>
@@ -162,7 +186,7 @@
                     </div>
                     
 
-                    
+
                     <div class="col-md-2">
                         <label style="font-weight: 600;" for="">Assicurazione: </label>
                         
@@ -180,7 +204,7 @@
                         
                         <button 
                             name="<?= $prenotazione_modifica ? 'salva_modifica' : 'aggiungi' ?>" 
-                            class="<?= $prenotazione_modifica ? 'warning' : 'success' ?>" 
+                            class="btn <?= $prenotazione_modifica ? 'btn-warning' : 'btn-success' ?>" 
                             type="submit">
                             <?= $prenotazione_modifica ? 'Salva' : 'Aggiungi' ?>
                         </button>
@@ -191,21 +215,6 @@
             </form>
         </div>
     </div>
-
-
-
-    <!--LOGICA RENDER -->
-    <?php
-
-        //vado a conteggiare il totale dei clienti con query
-        $total = $conn->query("SELECT COUNT(*) as t FROM prenotazioni")->fetch_assoc()['t'];
-        $totalPages = ceil($total / $perPagina); // il numero di pagine della navigazione
-
-        //QUERY PER ordinare i dati in modo DECRESCENTE IMPAGINATI PER valore di "$perPagina" 
-        $result = $conn->query("SELECT * FROM prenotazioni ORDER BY id ASC LIMIT $perPagina OFFSET $offset");
-
-    ?>
-
 
 
 
@@ -236,7 +245,7 @@
                 
                 <tr>
                     <td><?= $row['id'] ?></td>
-                    <td><?= $row['nome'] ?><?= $row['cognome'] ?></td>
+                    <td><?= $row['nome'] . ' ' . $row['cognome'] ?></td>
                     <td><?= $row['citta'] ?></td>
                     <td><?= $row['data_di_prenotazione'] ?></td>
                     <td><?= $row['acconto'] ?></td>

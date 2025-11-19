@@ -1,10 +1,9 @@
-<?php
-
-    include 'header.php';
+<?php 
+    include 'header.php'; 
     include 'db.php'; 
 
 
- //Logica per impaginazione
+    //Logica per impaginazione
     $perPagina = 10;  // n elementi mostrati per pagina
     $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
     $offset = ($page - 1) * $perPagina;
@@ -21,7 +20,7 @@
         $stmt = $conn->prepare("INSERT INTO destinazioni (citta, paese, prezzo, data_partenza, data_ritorno, posti_disponibili) 
                                 VALUES  (?, ?, ?, ?, ?, ?)");
         //Binding dei parametri e tipizzo
-        $stmt->bind_param("ssdssi", $_POST['citta'], $_POST['paese'], $_POST['prezzo'], $_POST['data_partenza'], $_POST['data_ritorno'], $_POST['posti_disponibili']);
+        $stmt->bind_param("ssdssi", $_POST['citta'], $_POST['paese'], $_POST['prezzo'],$_POST['data_partenza'], $_POST['data_ritorno'], $_POST['posti_disponibili']);
         
         //eseguo lo statement
         $stmt->execute();
@@ -57,11 +56,11 @@
         //PREPARE
         $stmt = $conn->prepare("UPDATE destinazioni SET citta=?, paese=?, prezzo=?, data_partenza=?, data_ritorno=?, posti_disponibili=? WHERE id=?");
         //BINDING
-        $stmt->bind_param("ssdssii" ,$_POST['citta'],$_POST['paese'],$_POST['prezzo'],$_POST['data_partenza'],$_POST['data_ritorno'],$_POST['posti_disponibili'], $_POST['id']);
+        $stmt->bind_param("ssdssii" ,$_POST['citta'],$_POST['paese'],$_POST['prezzo'],$_POST['data_partenza'],$_POST['data_ritorno'],$_POST['posti_disponibili'],$_POST['id']);
         //ESECUZIONE QUERY
         $stmt->execute();
         //messaggio
-        echo "<div class='alert alert-info'>Destinazione Modificata!</div>";
+        echo "<div class='alert alert-info'>Destinazione Modificata correttamente</div>";
     }
 
 
@@ -74,7 +73,7 @@
         $id = intval($_GET['elimina']);
         $conn->query("DELETE FROM destinazioni WHERE id = $id");
 
-        echo "<div class='alert alert-info'>Destinazione Cancellata!</div>";
+        echo "<div class='alert alert-info'>Destinazione Cancellata correttamente</div>";
     }
 
     
@@ -82,16 +81,16 @@
 
 
 
+
+
 <h2>Destinazioni</h2>
 
     <!--Form-->
     <div class="card mb-4">
-
         <div class="card-body">
-
             <form action="" method="POST">
 
-                    <?php if($destinazione_modifica): ?>
+                <?php if($destinazione_modifica): ?>
                 
                     <input type="hidden" name="id" value="<?= $destinazione_modifica['id'] ?>">
 
@@ -101,26 +100,28 @@
                     
                     <div class="col-md-6">
                         <label style="font-weight: 600;" for="">Città : </label>
-                        <input type="text" name="citta" class="form-control" placeholder="es.: Milano" required
+                        
+                        <!--con value prendo il valore del campo inserito-->
+                        <input type="text" name="citta" class="form-control" placeholder="es.: Milano"
+                        
                         
                         value="<?= $destinazione_modifica['citta'] ?? ''?>"
                         
                         required>
-                    
                     </div>
                     
                     <div class="col-md-6">
                         <label style="font-weight: 600;" for="">Paese : </label>
-                        <input type="text" name="paese" class="form-control" placeholder="es.: Italia" required
+                        <input type="text" name="paese" class="form-control" placeholder="es.: Italia" 
                         
                         value="<?= $destinazione_modifica['paese'] ?? ''?>"
-                        
+
                         required>
                     </div>
                     
                     <div class="col-md-6">
                         <label style="font-weight: 600;" for="">Prezzo : </label>
-                        <input type="number" name="prezzo" class="form-control" placeholder="" required
+                        <input type="number" min="1" name="prezzo" class="form-control" placeholder="" 
                         
                         value="<?= $destinazione_modifica['prezzo'] ?? ''?>"
                         
@@ -129,7 +130,7 @@
                     
                     <div class="col-md-6">
                         <label style="font-weight: 600;" for="">Data Partenza : </label>
-                        <input type="date" name="data_partenza" class="form-control" placeholder="" required
+                        <input type="date" name="data_partenza" class="form-control" placeholder="" 
                         
                         value="<?= $destinazione_modifica['data_partenza'] ?? ''?>"
                         
@@ -138,7 +139,7 @@
                     
                     <div class="col-md-6">
                         <label style="font-weight: 600;" for="">Data Ritorno : </label>
-                        <input type="date" name="data_ritorno" class="form-control" placeholder="" required
+                        <input type="date" name="data_ritorno" class="form-control" placeholder="" 
                         
                         value="<?= $destinazione_modifica['data_ritorno'] ?? ''?>"
                         
@@ -146,8 +147,8 @@
                     </div>
                     
                     <div class="col-md-6">
-                        <label style="font-weight: 600;" for="">Posti Disponibili : </label>
-                        <input type="number" name="posti_disponibili" class="form-control" placeholder="" required
+                        <label style="font-weight: 600;" for="">Posti disponibili : </label>
+                        <input type="number" min ="1" name="posti_disponibili" class="form-control" placeholder="" 
                         
                         value="<?= $destinazione_modifica['posti_disponibili'] ?? ''?>"
                         
@@ -155,13 +156,16 @@
                     </div>
                     
                     
+                    
                     <div class="col-12">
+                        
                         <button 
                             name="<?= $destinazione_modifica ? 'salva_modifica' : 'aggiungi' ?>" 
-                            class="<?= $destinazione_modifica ? 'warning' : 'success' ?>" 
+                            class="btn <?= $destinazione_modifica ? 'btn-warning' : 'btn-success' ?>" 
                             type="submit">
                             <?= $destinazione_modifica ? 'Salva' : 'Aggiungi' ?>
                         </button>
+                    
                     </div>
 
                 </div>
@@ -186,27 +190,27 @@
 
 
 
+
     <!--Tabella-->
     <table class="table table-striped">
 
         <thead>
-
+            <!--Intestazione tabella-->
             <tr>
 
                 <th>ID</th>
                 <th>Città</th>
                 <th>Paese</th>
                 <th>Prezzo</th>
-                <th>Data Partenza</th>
-                <th>Data Ritorno</th>
-                <th>Posti</th>
+                <th>Data di Partenza</th>
+                <th>Data di Ritorno</th>
+                <th>Posti Disponibili</th>
                 <th>Azioni</th>
 
             </tr>
 
         </thead>
-
-       <!--Corpo tabella-->
+        <!--Corpo tabella-->
         <tbody>
 
             <?php while ($row = $result->fetch_assoc()) : ?>
@@ -216,10 +220,9 @@
                     <td><?= $row['citta'] ?></td>
                     <td><?= $row['paese'] ?></td>
                     <td><?= $row['prezzo'] ?></td>
-                    <td><?= date('d/m/Y', strtotime($row['data_partenza'])) ?></td>
-                    <td><?= date('d/m/Y', strtotime($row['data_ritorno'])) ?></td>
+                    <td><?= $row['data_partenza'] ?></td>
+                    <td><?= $row['data_ritorno'] ?></td>
                     <td><?= $row['posti_disponibili'] ?></td>
-                    
                     <td>
 
                         <a class="btn btn-sm btn-warning" href="?modifica=<?= $row['id']  ?>">Modifica</a>
@@ -233,9 +236,12 @@
             <?php endwhile; ?>
 
         </tbody>
+
     </table>
 
-<!--Paginazione-->
+
+
+    <!--Paginazione-->
     <nav>
 
         <ul class="pagination">
@@ -252,11 +258,5 @@
 
         </ul>
     </nav>
-
-
-
-
-
-    
 
 <?php include 'footer.php'; ?>

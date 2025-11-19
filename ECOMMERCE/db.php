@@ -11,7 +11,7 @@
     
     //CREAZIONE DELLA CONNESSIONE
 
-    $conn = mysqli_connect($host, $user, $password, $database, 3308); //ha dato problemi nel caricamento della pagina e ho dovuto mettere la porta 3308
+    $conn = mysqli_connect($host, $user, $password, $database); //ha dato problemi nel caricamento della pagina e ho dovuto mettere la porta 3308
 
     //CONTROLLO DELLA CONNESSIONE
 

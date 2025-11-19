@@ -7,11 +7,11 @@
     $host = "localhost";        //HOSTNAME
     $user = "root";            //USERNAME
     $password = "";           //PASSWORD (viene chiesta durante installazione XAMPP)
-    $database = "tripagency"; //NOME DATABASE di phpmyadmin
+    $database = "trip_agency"; //NOME DATABASE di phpmyadmin
     
     //CREAZIONE DELLA CONNESSIONE
 
-    $conn = mysqli_connect($host, $user, $password, $database, 3308); //ha dato problemi nel caricamento della pagina e ho dovuto mettere la porta 3308
+    $conn = mysqli_connect($host, $user, $password, $database); //ha dato problemi nel caricamento della pagina e ho dovuto mettere la porta 3308
 
     //CONTROLLO DELLA CONNESSIONE
 

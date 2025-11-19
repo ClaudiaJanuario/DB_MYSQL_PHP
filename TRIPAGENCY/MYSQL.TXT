@@ -28,12 +28,13 @@ CREATE TABLE clienti (
 
 CREATE TABLE destinazioni (
 
-    id INT AUTO_INCREMENT PRIMARY KEY
+    id INT AUTO_INCREMENT PRIMARY KEY,
     citta VARCHAR(30) NOT NULL,
     paese VARCHAR(30) NOT NULL,
     prezzo DECIMAL(10,2) NOT NULL,                  //nello schema è int ma il prezzo non è sempre un intero
     data_partenza DATE NOT NULL,
-    data_ritorno DATE NOT NULL
+    data_ritorno DATE NOT NULL,
+    posti_disponibili INT NOT NULL
 
 );
 

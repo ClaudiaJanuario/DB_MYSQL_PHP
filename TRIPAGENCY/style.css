@@ -58,3 +58,12 @@ footer {
     
     padding: 2% 0;
 }
+
+
+/*wrapper per selection destinazione*/
+.wrapper{
+    width: 200px;
+    padding: 20px;
+    height: 150px;
+    
+}
