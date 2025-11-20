@@ -225,6 +225,16 @@
                             type="submit">
                             <?= $prenotazione_modifica ? 'Salva' : 'Aggiungi' ?>
                         </button>
+
+
+                         <!--Pulsante ANNULLA-->
+                        <?php if ($prenotazione_modifica) : ?>
+
+                            <a href="prenotazioni.php" class="btn btn-secondary ms-2">Annulla</a>
+
+                        <?php endif;?>
+
+
                     
                     </div>
                 </div>
@@ -236,50 +246,51 @@
 
 
     <!--Tabella-->
-    <table class="table table-striped">
+    <div class="table-responsive">
+        <table class="table table-striped">
 
-        <thead>
-            <!--Intestazione tabella-->
-            <tr>
-
-                <th>ID</th>
-                <th>Cliente</th>
-                <th>Destinazione</th>
-                <th>Data</th>
-                <th>Acconto</th>
-                <th>Assicurazione</th>
-                <th>Azioni</th>
-
-            </tr>
-
-        </thead>
-        
-        <!--Corpo tabella-->
-        <tbody>
-
-            <?php while ($row = $result->fetch_assoc()) : ?>
-                
+            <thead>
+                <!--Intestazione tabella-->
                 <tr>
-                    <td><?= $row['id'] ?></td>
-                    <td><?= $row['nome'] . ' ' . $row['cognome'] ?></td>
-                    <td><?= $row['citta'] ?></td>
-                    <td><?= date("d/m/Y H:i", strtotime($row['data_di_prenotazione'])) ?></td>
-                    <td><?= $row['acconto'] ?></td>
-                    <td><?= $row['assicurazione'] == 1 ? 'Presente' : 'Non presente' ?></td>
-                    
-                    <td>
-                        <a class="btn btn-sm btn-warning" href="?modifica=<?= $row['id']  ?>">🖊️</a>
-                        <a class="btn btn-sm btn-danger" href="?elimina=<?= $row['id']  ?>" onclick="return confirm ('Sicuro?')">🗑️</a>
-                    </td>
+
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Destinazione</th>
+                    <th>Data</th>
+                    <th>Acconto</th>
+                    <th>Assicurazione</th>
+                    <th>Azioni</th>
+
                 </tr>
 
+            </thead>
+            
+            <!--Corpo tabella-->
+            <tbody>
 
-            <?php endwhile; ?>
+                <?php while ($row = $result->fetch_assoc()) : ?>
+                    
+                    <tr>
+                        <td><?= $row['id'] ?></td>
+                        <td><?= $row['nome'] . ' ' . $row['cognome'] ?></td>
+                        <td><?= $row['citta'] ?></td>
+                        <td><?= date("d/m/Y H:i", strtotime($row['data_di_prenotazione'])) ?></td>
+                        <td><?= $row['acconto'] ?></td>
+                        <td><?= $row['assicurazione'] == 1 ? 'Presente' : 'Non presente' ?></td>
+                        
+                        <td>
+                            <a class="btn btn-sm btn-warning" href="?modifica=<?= $row['id']  ?>">🖊️</a>
+                            <a class="btn btn-sm btn-danger" href="?elimina=<?= $row['id']  ?>" onclick="return confirm ('Sicuro?')">🗑️</a>
+                        </td>
+                    </tr>
 
-        </tbody>
 
-    </table>
+                <?php endwhile; ?>
 
+            </tbody>
+
+        </table>
+    </div>
 
 
     <!--Paginazione-->

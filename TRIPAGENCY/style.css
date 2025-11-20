@@ -6,7 +6,7 @@ html, body {
 }
 
 body {
-    background-color: #DFAD0F;
+    background-color: #fcd587;
     font-family: "Playfair Display", serif;
     font-size: 24px;
 }
@@ -40,6 +40,8 @@ h1, h2, h3 {
 }
 
 
+
+
 .card {
     box-shadow: 0 2px 4px rgb(0, 0, 0.5);
     border-radius: 8px;
@@ -53,6 +55,10 @@ h1, h2, h3 {
     color: #333;
 }
 
+
+tr { 
+    align-items: center;
+}
 
 .pagination_personal .page-link{
 
@@ -91,9 +97,26 @@ h1, h2, h3 {
 }
 
 
-/*wrapper per selection destinazione*/
-.wrapper{
-    width: auto;
-    height: auto;
-    
+/* MEDIA QUERY PER REGOLE SU BREAKPOINT */
+@media (max-width: 992px) {
+    .table-responsive {
+        overflow-x: auto;
+    }
+}  
+
+
+
+/* elementi hamburgher menu a destra*/
+.item_right {
+
+    margin-left: auto;
+}
+
+
+
+.table td.truncate {
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

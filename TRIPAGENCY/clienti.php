@@ -16,16 +16,53 @@
     //chiamata POST che prende il gancio del bottone aggiugi del form, prendendo i valori inseriti nei vari campi
     if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['aggiungi'])){
 
+
+        $upload = null;
+
+        //controllo del campo documento -> se il file è stato effettivamente caricato
+        //$_FILES -> contiene tutti i file caricati tramite l input
+        //$_FILES['documento']['name'] -> il nome originale del file scelto dall utente
+        //if(!empty($_FILES['documento']['name'])){ -> "solo se un file è stato caricato"
+        //quindi se il campo è vuoto non si tenta l UPLOAD
+
+        if(!empty($_FILES['documento']['name'])){
+
+            //ESTRAE IL NOME DEL FILE SENZA PERCORSO
+            //   "../../nome_file.estensione"   -> "nome_file.estensione"
+            $upload = time() . "_" . basename($_FILES['documento']['name']); //filename
+            //sposto il file dalla posizione tmp/ alla cartella uploads/
+            move_uploaded_file($_FILES['documento']['tmp_name'], "uploads/" . $upload);
+
+        }
+
+       
+
+
         //Preparo lo stato stmt -> statement 
         $stmt = $conn->prepare("INSERT INTO clienti (nome, cognome, email, telefono, nazione, codice_fiscale, documento) 
                                 VALUES  (?, ?, ?, ?, ?, ?, ?)");
         //Binding dei parametri e tipizzo
-        $stmt->bind_param("sssssss", $_POST['nome'], $_POST['cognome'], $_POST['email'], $_POST['telefono'], $_POST['nazione'], $_POST['codice_fiscale'], $_POST['documento']);
+        $stmt->bind_param("sssssss", $_POST['nome'], $_POST['cognome'], $_POST['email'], $_POST['telefono'], $_POST['nazione'], $_POST['codice_fiscale'], $upload);
         
         //eseguo lo statement
         $stmt->execute();
 
-        echo "<div class='alert alert-success'>Cliente Aggiunto!</div>";
+        echo "<div class='alert alert-info'>Cliente Aggiunto!</div>";
+        echo "
+        
+                <script>
+
+                    setTimeout(function () {
+
+                        window.location.href = 'clienti.php'
+
+                    }, 2500);
+
+                </script>
+        
+             ";
+
+        exit;
 
 
     }
@@ -53,14 +90,52 @@
     //MODIFICA DEL DATO, SALVATAGGIO 
     if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['salva_modifica'])){
 
+
+
+        if(!empty($_FILES['documento']['name'])){
+
+            //ESTRAE IL NOME DEL FILE SENZA PERCORSO
+            //   "../../nome_file.estensione"   -> "nome_file.estensione"
+            $nuovoDocumento = time() . "_" . basename($_FILES['documento']['name']); //filename
+            //sposto il file dalla posizione tmp/ alla cartella uploads/
+            move_uploaded_file($_FILES['documento']['tmp_name'], "uploads/" . $nuovoDocumento);
+
+        }else{
+
+
+            $nuovoDocumento = $_POST['documento_esistente'];
+
+        }
+
+
+
+
+
+
+
         //PREPARE
         $stmt = $conn->prepare("UPDATE clienti SET nome=?, cognome=?, email=?, telefono=?, nazione=?, codice_fiscale=?, documento=? WHERE id=?");
         //BINDING
-        $stmt->bind_param("sssssssi" ,$_POST['nome'],$_POST['cognome'],$_POST['email'],$_POST['telefono'],$_POST['nazione'],$_POST['codice_fiscale'],$_POST['documento'], $_POST['id']);
+        $stmt->bind_param("sssssssi" ,$_POST['nome'],$_POST['cognome'],$_POST['email'],$_POST['telefono'],$_POST['nazione'],$_POST['codice_fiscale'],$nuovoDocumento, $_POST['id']);
         //ESECUZIONE QUERY
         $stmt->execute();
         //messaggio
-        echo "<div class='alert alert-info'>Cliente Modificato correttamente</div>";
+        echo "<div class='alert alert-info'>Cliente modificato correttamente</div>";
+        echo "
+        
+                <script>
+
+                    setTimeout(function () {
+
+                        window.location.href = 'clienti.php'
+
+                    }, 2500);
+
+                </script>
+        
+             ";
+
+        exit;
     }
 
 
@@ -88,7 +163,9 @@
     <!--Form-->
     <div class="card mb-4">
         <div class="card-body">
-            <form action="" method="POST">
+
+            <!--EncType è il supporto dell upload del file nel form-->
+            <form action="" method="POST" enctype="multipart/form-data">
 
                 <?php if($cliente_modifica): ?>
                 
@@ -155,9 +232,19 @@
                         required>
                     </div>
                     
+
+                    <!--Ottengo il VECCHIO FILE DAL DATABASE-->
+                    <?php if ($cliente_modifica) : ?>
+
+                        <input type="hidden" name="documento_esistente" value="<?= $cliente_modifica['documento'] ?>">
+
+                    <?php endif; ?>
+
+
+
                     <div class="col-md-6">
                         <label style="font-weight: 600;" for="">Documento : </label>
-                        <input type="file" name="documento" class="form-control" placeholder="Inserisci il codice del documento del cliente..." 
+                        <input type="file" data-max-size="1000000" accept=".pdf, .jpg, .png"  name="documento" class="form-control" placeholder="La dimnesione massima consentita : 2MB !" 
                         
                         value="<?= $cliente_modifica['documento'] ?? ''?>"
                         >
@@ -172,6 +259,14 @@
                             type="submit">
                             <?= $cliente_modifica ? 'Salva' : 'Aggiungi' ?>
                         </button>
+
+
+                        <!--Pulsante ANNULLA-->
+                        <?php if ($cliente_modifica) : ?>
+
+                            <a href="clienti.php" class="btn btn-secondary ms-2">Annulla</a>
+
+                        <?php endif;?>
                     
                     </div>
 
@@ -198,62 +293,86 @@
 
 
 
+
     <!--Tabella-->
-    <table class="table table-striped">
+    <div class="table-responsive">
+        <table class="table table-striped">
 
-        <thead>
-            <!--Intestazione tabella-->
-            <tr>
-
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Cognome</th>
-                <th>Email</th>
-                <th>Telefono</th>
-                <th>Nazione</th>
-                <th>Codice Fiscale</th>
-                <th>Documento</th>
-                <th>Azioni</th>
-
-            </tr>
-
-        </thead>
-        <!--Corpo tabella-->
-        <tbody>
-
-            <?php while ($row = $result->fetch_assoc()) : ?>
-                
+            <thead>
+                <!--Intestazione tabella-->
                 <tr>
-                    <td><?= $row['id'] ?></td>
-                    <td><?= $row['nome'] ?></td>
-                    <td><?= $row['cognome'] ?></td>
-                    <td><?= $row['email'] ?></td>
-                    <td><?= $row['telefono'] ?></td>
-                    <td><?= $row['nazione'] ?></td>
-                    <td><?= $row['codice_fiscale'] ?></td>
-                    <td><?= $row['documento'] ?></td>
-                    <td>
 
-                        <a class="btn btn-sm btn-warning" href="?modifica=<?= $row['id']  ?>">🖊️</a>
-                        <a class="btn btn-sm btn-danger" href="?elimina=<?= $row['id']  ?>" onclick="return confirm ('Sicuro?')">🗑️</a>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Cognome</th>
+                    <th>Email</th>
+                    <th>Telefono</th>
+                    <th>Nazione</th>
+                    <th>Codice Fiscale</th>
+                    <th>Documento</th>
+                    <th class="text-center">Azioni</th>
 
-
-                    </td>
                 </tr>
 
+            </thead>
+            <!--Corpo tabella-->
+            <tbody>
 
-            <?php endwhile; ?>
+                <?php while ($row = $result->fetch_assoc()) : ?>
+                    
+                    <tr>
+                        <td><?= $row['id'] ?></td>
+                        <td><?= $row['nome'] ?></td>
+                        <td><?= $row['cognome'] ?></td>
+                        <td><?= $row['email'] ?></td>
+                        <td><?= $row['telefono'] ?></td>
+                        <td><?= $row['nazione'] ?></td>
+                        <td><?= $row['codice_fiscale'] ?></td>
+                        <td>
+                            <?php if(!empty($row['documento'])) : ?>
+                        
+                                <a href="uploads/<?= $row['documento'] ?>"
+                                
+                                    download
+                                    data-bs-toggle="tooltip"
+                                    title="Scarica : <?= $row['documento'] ?>">
 
-        </tbody>
+                                    <i class="bi bi-file-earmark-check"style="font-size: 1.5rem;"></i>
 
-    </table>
+                                </a>
+                            
+                        
+                            <?php else: ?>
+                                
+                                <span><i class="bi bi-file-x-fill" style="font-size: 1.5rem;"></i></span>
 
+
+                            <?php endif; ?>
+
+                        </td>
+                        
+                        <td class="text-center">
+
+                            <a class="btn btn-sm btn-warning" href="?modifica=<?= $row['id']  ?>"><i class="bi bi-pen"></i></a>
+                            <a class="btn btn-sm btn-danger" href="?elimina=<?= $row['id']  ?>" onclick="return confirm ('Sicuro?')"><i class="bi bi-trash"></i></a>
+
+
+                        </td>
+                    </tr>
+
+
+                <?php endwhile; ?>
+
+            </tbody>
+
+        </table>
+    </div>
 
 
     <!--Paginazione-->
     <nav>
 
-        <ul class="pagination pagination_personal">
+        <ul class="pagination  pagination_personal">
 
             <?php for($i = 1; $i <= $totalPages; $i++ ) : ?>
 
