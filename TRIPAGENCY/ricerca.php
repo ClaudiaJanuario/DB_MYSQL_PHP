@@ -18,7 +18,7 @@
     $citta = $_GET['citta'] ?? '';
     $prezzo_max = $_GET['prezzo_max'] ?? '';
     $data = $_GET['data'] ?? '';
-    
+    $posti = $_GET['posti'] ?? '';
 
 
     //Costruzione della QUERY
@@ -27,12 +27,13 @@
     $params = []; //CONTIENE I VALORI PER ? (PLACEHOLDER DELLA QUERY)
     $types = ''; // CONTINENE IL BINDING (ssid)
 
-    //se sto facendo la ricerca per nome
+    //Se sto facendo la ricerca per nome
     if($nome_cliente !== ''){
 
         $where .= " AND (c.nome LIKE ? OR c.cognome LIKE ?)";
         $params[] = "%$nome_cliente%";
-        $types .= 's';
+        $params[] = "%$nome_cliente%";
+        $types .= 'ss';
 
     }
     if($paese !== ''){
@@ -58,16 +59,28 @@
     }
     if($data !== ''){
 
-        $where .= " AND (p.data_prenotazione = ? )";
+        $where .= " AND (p.data_di_prenotazione = ? )";
         $params[] = $data;
         $types .= 's';
 
     }
  
 
+    if($posti !== ''){
 
-    //conteggio totale
+        $where .= " AND (d.posti_totale - COALESCE 
+                    SELECT SUM(
+        
+        
+        
+        )";
+        $params[] = intval($posti);
+        $types .= 's';
 
+    }
+
+
+    //Conteggio totale
     $stmt = $conn->prepare("SELECT COUNT(*) as total 
                             FROM prenotazioni p
                             JOIN clienti c ON p.id_cliente = c.id
@@ -81,8 +94,7 @@
 
 
     //Risultati impaginati
-
-    $stmt = $conn->prepare("SELECT p.id, c.nome, c.cognome, d.citta, d.paese, d.prezzo, p.data_prenotazione
+    $stmt = $conn->prepare("SELECT p.id, c.nome, c.cognome, d.citta, d.paese, d.prezzo, p.data_di_prenotazione
                             FROM prenotazioni p
                             JOIN clienti c ON p.id_cliente = c.id
                             JOIN destinazioni d ON p.id_destinazione = d.id
@@ -94,16 +106,6 @@
     $stmt->bind_param($types, ...$params);
     $stmt->execute();
     $result = $stmt->get_result();
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -120,14 +122,37 @@
 
     <form action="" method="GET">
 
-        <div><input type="text" name="nome_cliente"value="<?=  htmlspecialchars($nome_cliente)  ?>" class="form-control" placeholder="Cliente.."></div>
-        <div><input type="text" name="paese" value="<?=  htmlspecialchars($paese)  ?>" class="form-control" placeholder="Paese"></div>
-        <div><input type="text" name="citta" value="<?=  htmlspecialchars($citta)  ?>" class="form-control" placeholder="Città.."></div>
-        <div><input type="number" name="prezzo_max" value="<?=  htmlspecialchars($prezzo_max)  ?>" class="form-control" placeholder="Prezzo max euro.."></div>
-        <div><input type="date" value="<?=  htmlspecialchars($data)  ?>" class="form-control" name="data"></div>
+        <div>
+            <input type="text" name="nome_cliente"value="<?=  htmlspecialchars($nome_cliente)  ?>" class="form-control" placeholder="Cliente..">
+        </div>
+
+        <div class="mt-2">
+            <input type="text" name="paese" value="<?=  htmlspecialchars($paese)  ?>" class="form-control" placeholder="Paese">
+        </div>
+
+        <div class="mt-2">
+            <input type="text" name="citta" value="<?=  htmlspecialchars($citta)  ?>" class="form-control" placeholder="Città..">
+        </div>
+
+        <div class="mt-2">
+            <input type="number" name="prezzo_max" value="<?=  htmlspecialchars($prezzo_max)  ?>" class="form-control" placeholder="Prezzo max euro..">
+        </div>
+
+        <div class="mt-2">
+            <input type="number" name="posti" value="<?=  htmlspecialchars($posti)  ?>" class="form-control" placeholder="Posti disponibili...">
+        </div>
+
+        <div class=" mt-2 mb-2">
+            <input type="date" name="data" value="<?=  htmlspecialchars($data) ?>" class="form-control" >
+        </div>
         
 
         <button class="btn btn-primary">Cerca</button>
+
+       <!-- <button type="reset" class="btn btn-primary">Reset dei Campi</button> -->  <!--svuota solo la prima volta-->
+
+        <!--Annulla ricerca-->
+        <a href="ricerca.php" class="btn btn-secondary ms-2">Annulla</a>
 
     </form>
 
@@ -148,13 +173,14 @@
 
         <tbody>
         <?php while ($row = $result->fetch_assoc()) : ?>
+            
             <tr>
                 <td><?= $row['id'] ?></td>
                 <td><?= $row['nome'] ?></td>
                 <td><?= $row['paese'] ?></td>
                 <td><?= $row['citta'] ?></td>
                 <td><?= $row['prezzo'] ?></td>
-                <td><?= $row['data_prenotazione'] ?></td>
+                <td><?= $row['data_di_prenotazione'] ?></td>
          
             </tr>
 

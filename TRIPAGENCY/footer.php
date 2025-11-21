@@ -1,6 +1,6 @@
 </main> <!-- chiusura main di header-->
 
-<footer class="text-white text-center footer_personal p-5 fixed" style="background-color: #0081a7">
+<footer class="text-white text-center footer_personal p-5 fixed" style="background-color: #3C405B">
 
     <small>© Trip-Agency <?php echo date("Y"); ?></small>
 

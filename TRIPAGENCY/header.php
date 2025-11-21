@@ -18,14 +18,14 @@
 </head>
 <body>
     
-<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #5B141D">
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #3C405B">
 
     <div class="container-fluid">
 
         <!--Logo o Brand-->
         <a class="navbar-brand d-flex align-items-center" href="index.php">
             <img src="images/logo4.png" alt="" style="height: 70px; width: auto;">
-            <h2 class="nav_brand">Brasil-Agency</h2>
+            <h2 class="nav_brand">Sul Viaggio - Agency</h2>
         </a>
 
         <!--Bottone Hamburgher-->

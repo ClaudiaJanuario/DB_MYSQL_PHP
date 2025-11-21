@@ -6,7 +6,7 @@ html, body {
 }
 
 body {
-    background-color: #fcd587;
+    background-color: #DF7A5D;
     font-family: "Playfair Display", serif;
     font-size: 24px;
 }
@@ -30,7 +30,7 @@ h1, h2, h3 {
 
 .navbar {
     box-shadow: 0, 2px, 4px, rgb(0, 0, 0.1);
-    color: #860608;
+    color: #3C405B;
 }
 
 .navbar .nav-link:hover {
@@ -39,7 +39,10 @@ h1, h2, h3 {
 
 }
 
+.nav_brand{
 
+   color: #F4F1DE;
+}
 
 
 .card {
@@ -63,23 +66,23 @@ tr {
 .pagination_personal .page-link{
 
     color: #fff;
-    background-color: #2A4591;
+    background-color: #3C405B;
     border-color: #DFAD0F;
 }
 
 .pagination_personal .page-link:hover{
     
     color: #fff;
-    background-color: #567ade;
-    border-color: #DFAD0F;
+    background-color: #5c6181;
+    border-color: #DF7A5D;
     
 }
 
 .pagination_personal .page-link.active .page-link {
     
     color: #fff;
-    background-color: #567ade;
-    border-color: #DFAD0F;
+    background-color: #5c6181;
+    border-color: #DF7A5D;
     
 }
 
